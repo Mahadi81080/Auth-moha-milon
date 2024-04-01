@@ -1,9 +1,10 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../Provider/AuthProvider";
 
 const Login = () => {
-  const { singInUser } = useContext(AuthContext);
+  const { singInUser,singInWithGoogle } = useContext(AuthContext);
+  const navigate =useNavigate()
   const handleLogin = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
@@ -13,11 +14,23 @@ const Login = () => {
     singInUser(email, password)
       .then((result) => {
         console.log(result.user);
+        e.target.reset()
+        navigate('/')
       })
       .catch((error) => {
         console.error(error);
       });
+
   };
+  const handleGoogleSingIn=()=>{
+    singInWithGoogle()
+    .then(result=>{
+      console.log(result.user);
+    })
+    .catch(error=>{
+      console.error(error);
+    })
+  }
   return (
     <div className="flex justify-center">
       <div className="flex flex-col shadow-lg max-w-md p-6 rounded-md sm:p-10 dark:bg-gray-50 dark:text-gray-800">
@@ -80,6 +93,7 @@ const Login = () => {
             </p>
           </div>
         </form>
+        <p><button onClick={handleGoogleSingIn} className="btn btn-ghost">Google</button></p>
       </div>
     </div>
   );
